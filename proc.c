@@ -6,7 +6,7 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
-
+extern int ReadCount;
 struct {
   struct spinlock lock;
   struct proc proc[NPROC];
@@ -545,11 +545,11 @@ ProcCount(void){
     }
   }
   cprintf("process count is %d",counter);
-  
+
   return 0;
   
 }
 int getReadCount(void){
-  cprintf("mamad\n");
+  cprintf("%d",ReadCount);
   return 0;
 } 

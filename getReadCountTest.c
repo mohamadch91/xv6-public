@@ -3,6 +3,7 @@
 #include "user.h"
 int main (void){
     getReadCount();
+
     printf(1,"\nsuccess\n");
     exit();
 }
