@@ -93,3 +93,6 @@ int
 sys_ProcCount(void){
   return ProcCount();
 }
+int sys_getReadCount(void){
+  return getReadCount(); 
+} 

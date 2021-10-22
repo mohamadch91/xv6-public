@@ -535,4 +535,9 @@ procdump(void)
 int
 ProcCount(void){
   cprintf("salam");
+  return 0;
 }
+int getReadCount(void){
+  cprintf("mamad\n");
+  return 0;
+} 

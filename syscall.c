@@ -103,7 +103,8 @@ extern int sys_unlink(void);
 extern int sys_wait(void);
 extern int sys_write(void);
 extern int sys_uptime(void);
-
+extern int sys_ProcCount(void);
+extern int sys_getReadCount(void); 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
 [SYS_exit]    sys_exit,
@@ -126,6 +127,8 @@ static int (*syscalls[])(void) = {
 [SYS_link]    sys_link,
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
+[SYS_ProcCount] sys_ProcCount,
+[SYS_getReadCount] sys_getReadCount, 
 };
 
 void
