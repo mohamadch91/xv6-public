@@ -541,15 +541,16 @@ ProcCount(void){
   for(int i=0; i < NPROC; i++){
     if(p[i].state !=UNUSED){
       counter++;
+      cprintf("%s\n",p[i].name);
      
     }
   }
-  cprintf("process count is %d",counter);
 
-  return 0;
+
+  return counter;
   
 }
 int getReadCount(void){
-  cprintf("%d",ReadCount);
-  return 0;
+  
+  return ReadCount;
 } 

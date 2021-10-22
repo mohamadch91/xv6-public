@@ -2,7 +2,7 @@
 #include "stat.h"
 #include "user.h"
 int main (void){
-    getReadCount();
+    printf("number of Read is : %d \n",getReadCount());
 
     printf(1,"\nsuccess\n");
     exit();

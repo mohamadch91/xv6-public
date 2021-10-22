@@ -2,7 +2,7 @@
 #include "stat.h"
 #include "user.h"
 int main (void){
-    ProcCount();
+    printf("number of process is : %d \n",ProcCount());
     printf(1,"\nsuccess\n");
     exit();
 }
