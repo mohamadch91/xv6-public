@@ -534,8 +534,20 @@ procdump(void)
 }
 int
 ProcCount(void){
-  cprintf("salam");
+  struct proc *p;
+
+  int counter=0;
+  p=ptable.proc;
+  for(int i=0; i < NPROC; i++){
+    if(p[i].state !=UNUSED){
+      counter++;
+     
+    }
+  }
+  cprintf("process count is %d",counter);
+  
   return 0;
+  
 }
 int getReadCount(void){
   cprintf("mamad\n");
