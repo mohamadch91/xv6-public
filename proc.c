@@ -532,3 +532,7 @@ procdump(void)
     cprintf("\n");
   }
 }
+int
+ProcCount(void){
+  cprintf("salam");
+}
