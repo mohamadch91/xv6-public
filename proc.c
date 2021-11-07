@@ -535,16 +535,17 @@ procdump(void)
 int
 ProcCount(void){
   struct proc *p;
-
+  acquire(&ptable.lock);
   int counter=0;
   p=ptable.proc;
   for(int i=0; i < NPROC; i++){
     if(p[i].state !=UNUSED){
       counter++;
       cprintf("%s\n",p[i].name);
-     
+        
     }
   }
+  release(&ptable.lock);
 
 
   return counter;
