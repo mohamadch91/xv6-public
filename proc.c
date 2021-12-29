@@ -574,5 +574,46 @@ clone(void* stack){
   }
   //increas ethread number for parent defoult is 0
   curproc->threads++;
+  // stack top 
+  newproc->stackTop = (int)((char*)stack+PGSIZE);
+  acquire(&ptable.lock);
+  newproc->pgdir=curproc->pgdir;
+  newproc->sz=curproc->sz;
+  release(&ptable.lock);
+  
+  int bytesOnStack = curproc->stackTop - curproc->tf->esp;
+  newproc->tf->esp = newproc->stackTop - bytesOnStack;
+  memmove((void*)newproc->tf->esp, (void*)curproc->tf->esp, bytesOnStack);
+
+  newproc->parent = curproc;
+
+  // copying all trapframe register values from p into newp
+  *newproc->tf = *curproc->tf;
+
+  // Clear %eax so that fork returns 0 in the child.
+  newproc->tf->eax = 0;
+
+  // esp points to the top of the stack (esp is the stack pointer)
+  newproc->tf->esp = newproc->stackTop - bytesOnStack;
+  // ebp is the base pointer
+  newproc->tf->ebp = newproc->stackTop - (curproc->stackTop - curproc->tf->ebp);
+
+  int i;
+  for(i = 0; i < NOFILE; i++)
+    if(curproc->ofile[i])
+      newproc->ofile[i] = filedup(curproc->ofile[i]);
+  newproc->cwd = idup(curproc->cwd);
+
+  safestrcpy(newproc->name, curproc->name, sizeof(curproc->name));
+
+  pid = newproc->pid;
+
+  acquire(&ptable.lock);
+
+  newproc->state = RUNNABLE;
+
+  release(&ptable.lock);
+
+  return pid;
 
 }
