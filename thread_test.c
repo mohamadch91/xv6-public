@@ -11,7 +11,7 @@ sleep_func(void* arg)
   exit();
 }
 
-//function do test thread and fork to see pgtable amnd join and wait
+//function do test thread and fork to see pgtable and join and wait
 void
 create_n_threads(int n)
 {
