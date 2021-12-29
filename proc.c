@@ -89,8 +89,8 @@ found:
   p->state = EMBRYO;
   p->pid = nextpid++;
   //make thread ans stacktop zero
-  p->threads=0; //illegal value means its process
-  p->stackTop=0; //illegal value means its process
+  p->threads=-1; //illegal value means its process
+  p->stackTop=-1; //illegal value means its process
 
   release(&ptable.lock);
 
@@ -270,6 +270,19 @@ exit(void)
   sched();
   panic("zombie exit");
 }
+//check page directory page 
+int 
+check_pgdir(struct proc * process){
+  struct proc *p;
+  for(p=ptable.proc;p<&ptable.proc[NPROC];p++){ 
+    if(p!= process &&p->pgdir==process->pgdir){
+      return 0;
+    }
+  }
+  return 1; 
+}
+
+
 
 // Wait for a child process to exit and return its pid.
 // Return -1 if this process has no children.
@@ -287,37 +300,58 @@ wait(void)
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if(p->parent != curproc)
         continue;
-       // only join handles child threads
-      if(p->threads == 0)
-        continue;    
+      // only join handles child threads
+      if(p->threads == -1)
+        continue;          
       havekids = 1;
       if(p->state == ZOMBIE){
         // Found one.
         pid = p->pid;
         kfree(p->kstack);
         p->kstack = 0;
-        freevm(p->pgdir);
+        
+        if(check_pgdir_share(p))
+          freevm(p->pgdir);
+
         p->pid = 0;
         p->parent = 0;
         p->name[0] = 0;
         p->killed = 0;
         p->state = UNUSED;
+        // reset stackTop and pgdir if it is the parent
+        p->stackTop = -1;
+        p->pgdir = 0;
+        p->threads = -1; 
+
+        
+        // check the parent's thread count and if one thread its true to free page table
+        if(p->threads == 1){
+          freevm(p->pgdir);
+          p->pid = 0;
+          p->parent = 0;
+          p->name[0] = 0;
+          p->killed = 0;
+          p->state = UNUSED;
+          // reset stackTop and pgdir if it is the parent
+          p->stackTop = -1;
+          p->pgdir = 0;
+          p->threads = -1;
+        }
+        else{
+          p->pid = 0;
+          p->parent = 0;
+          p->name[0] = 0;
+          p->killed = 0;
+          p->state = UNUSED;
+          // reset stackTop and pgdir if it is the parent
+          p->stackTop = -1;
+          p->pgdir = 0;
+          p->threads = -1;
+        }
         release(&ptable.lock);
         return pid;
       }
     }
-
-    // No point waiting if we don't have any children.
-    if(!havekids || curproc->killed){
-      release(&ptable.lock);
-      return -1;
-    }
-
-    // Wait for children to exit.  (See wakeup1 call in proc_exit.)
-    sleep(curproc, &ptable.lock);  //DOC: wait-sleep
-  }
-}
-
 //PAGEBREAK: 42
 // Per-CPU process scheduler.
 // Each CPU calls scheduler() after setting itself up.
@@ -578,7 +612,7 @@ clone(void* stack){
     cprintf("allocproc failed\n");
     return -1;
   }
-  //increas ethread number for parent defoult is 0
+  //increas ethread number for parent defoult is -1
   curproc->threads++;
   // stack top 
   newproc->stackTop = (int)((char*)stack+PGSIZE);
@@ -623,19 +657,6 @@ clone(void* stack){
   return pid;
 
 }
-//check page directory page 
-int 
-check_pgdir(struct proc * process){
-  struct proc *p;
-  for(p=ptable.proc;p<&ptable.proc[NPROC];p++){ 
-    if(p!= process &&p->pgdir==process->pgdir){
-      return 0;
-    }
-  }
-  return 1; 
-}
-
-
 
 // function like wait
 // just wait for threads
@@ -659,7 +680,7 @@ join(void){
       if(p->parent != curproc)
         continue;
       
-      if(p->threads!=0){//just wait for threads
+      if(p->threads!=-1){//just wait for threads
         continue;
       }
       havekids = 1;
