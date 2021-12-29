@@ -13,7 +13,7 @@ struct {
 } ptable;
 
 static struct proc *initproc;
-
+struct spinlock thread;
 int nextpid = 1;
 extern void forkret(void);
 extern void trapret(void);
@@ -24,6 +24,7 @@ void
 pinit(void)
 {
   initlock(&ptable.lock, "ptable");
+  initlock(&thread, "thread");
 }
 
 // Must be called with interrupts disabled
@@ -158,21 +159,77 @@ userinit(void)
 
 // Grow current process's memory by n bytes.
 // Return 0 on success, -1 on failure.
+// Grow current process's memory by n bytes.
+// Return 0 on success, -1 on failure.
 int
 growproc(int n)
 {
   uint sz;
   struct proc *curproc = myproc();
 
+  acquire(&thread);
   sz = curproc->sz;
   if(n > 0){
-    if((sz = allocuvm(curproc->pgdir, sz, sz + n)) == 0)
+    if((sz = allocuvm(curproc->pgdir, sz, sz + n)) == 0){
+      release(&thread);
       return -1;
+    }
+      
   } else if(n < 0){
-    if((sz = deallocuvm(curproc->pgdir, sz, sz + n)) == 0)
+    if((sz = deallocuvm(curproc->pgdir, sz, sz + n)) == 0){
+      release(&thread);
       return -1;
+    }
+      
   }
+
   curproc->sz = sz;
+  acquire(&ptable.lock);
+  // we should update sz in all threads due to existence of clone system call
+  struct proc *p;
+  int numberOfChildren;
+  // check if it is a child or parent
+  if(curproc->threads == -1) //child
+  {
+    // update parents sz
+    curproc->parent->sz = curproc->sz;
+    // - 2 is because of updating parent along with one child
+    numberOfChildren = curproc->parent->threads - 2;
+    if(numberOfChildren <= 0){
+      release(&ptable.lock);
+      release(&thread);
+      switchuvm(curproc);
+      return 0;
+    }
+
+    else
+      for(p = ptable.proc; p < &ptable.proc[NPROC];p++){
+      if(p!=curproc && p->parent == curproc->parent && p->threads == -1){
+        p->sz = curproc->sz;
+        numberOfChildren--;
+      }
+    }
+  }
+  else{ // is not a child
+    numberOfChildren = curproc->threads - 1;
+    if(numberOfChildren <= 0){
+      release(&ptable.lock);
+      release(&thread);
+      switchuvm(curproc);
+      return 0;
+    }
+    else
+      for(p = ptable.proc; p < &ptable.proc[NPROC];p++){
+        if(p->parent == curproc && p->threads == -1){
+          p->sz = curproc->sz;
+          numberOfChildren--;
+
+        }
+      }
+  }
+
+  release(&ptable.lock);
+  release(&thread);
   switchuvm(curproc);
   return 0;
 }
@@ -324,7 +381,7 @@ wait(void)
         p->threads = -1; 
 
         
-        // check the parent's thread count and if one thread its true to free page table
+        // check if its no threds remain free page table
         if(p->threads == 1){
           freevm(p->pgdir);
           p->pid = 0;
@@ -352,6 +409,18 @@ wait(void)
         return pid;
       }
     }
+
+    // No point waiting if we don't have any children.
+    if(!havekids || curproc->killed){
+      release(&ptable.lock);
+      return -1;
+    }
+
+    // Wait for children to exit.  (See wakeup1 call in proc_exit.)
+    sleep(curproc, &ptable.lock);  //DOC: wait-sleep
+  }
+}
+
 //PAGEBREAK: 42
 // Per-CPU process scheduler.
 // Each CPU calls scheduler() after setting itself up.
