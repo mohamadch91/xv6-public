@@ -221,6 +221,7 @@ fork(void)
   return pid;
 }
 
+
 // Exit the current process.  Does not return.
 // An exited process remains in the zombie state
 // until its parent calls wait() to find out it exited.
@@ -555,3 +556,23 @@ int getReadCount(void){
   
   return ReadCount;
 } 
+//define clone in proc.c
+// create new thread 
+//use shared memory
+//return 0 on success, -1 on failure
+int
+clone(void* stack){
+  int pid;
+  //define current procees
+  struct proc *curproc = myproc();
+  //define new process
+  struct proc *newproc;
+  //define new process's stack
+  if((newproc = allocproc()) == 0){
+    cprintf("allocproc failed\n");
+    return -1;
+  }
+  //increas ethread number for parent defoult is 0
+  curproc->threads++;
+
+}
