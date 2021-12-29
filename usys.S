@@ -30,6 +30,6 @@ SYSCALL(sbrk)
 SYSCALL(sleep)
 SYSCALL(uptime)
 SYSCALL(ProcCount)
-SYSCALL(getReadCount
+SYSCALL(getReadCount)
 SYSCALL(clone)
-SYSCALL(join))
+SYSCALL(join)

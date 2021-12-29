@@ -334,7 +334,7 @@ exit(void)
 }
 //check page directory page 
 int 
-check_pgdir(struct proc * process){
+check_pgdir_share(struct proc * process){
   struct proc *p;
   for(p=ptable.proc;p<&ptable.proc[NPROC];p++){ 
     if(p!= process &&p->pgdir==process->pgdir){

@@ -94,7 +94,8 @@ sys_ProcCount(void){
   return ProcCount();
 }
 int sys_getReadCount(void);
-sys_clone(void)
+
+int sys_clone(void)
 {
   //  stackptr is stack_pointer
   int stackptr = 0;
