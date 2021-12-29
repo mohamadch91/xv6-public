@@ -628,11 +628,11 @@ int
 check_pgdir(struct proc * process){
   struct proc *p;
   for(p=ptable.proc;p<&ptable.proc[NPROC];p++){ 
-    if(p!= process &&p->pgdir==process->pagedir){
+    if(p!= process &&p->pgdir==process->pgdir){
       return 0;
     }
   }
-  return 1;
+  return 1; 
 }
 
 
