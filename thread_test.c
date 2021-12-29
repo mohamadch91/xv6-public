@@ -11,7 +11,7 @@ sleep_func(void* arg)
   exit();
 }
 
-// some clone calls will fail due to xv6 supporting only 64 processes.
+//function do test thread and fork to see pgtable amnd join and wait
 void
 create_n_threads(int n)
 {

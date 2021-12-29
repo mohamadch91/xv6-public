@@ -1,7 +1,7 @@
 #include "types.h"
 #include "stat.h"
 #include "user.h"
-
+//run function to test thread and calcultion with threads
 void
 run(void* arg)
 {

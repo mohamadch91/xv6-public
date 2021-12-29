@@ -5,7 +5,7 @@
 void childPrint(void* args){
     printf(1, "hi, childs function executed properly with argument : %d\n", *(int*) args);
 }
-
+//just create thread
 int main(void){
     int argument = 0x0F01; // 3841 in decimal
     int thread_id = thread_create(&childPrint, (void*)&argument);
