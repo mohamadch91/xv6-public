@@ -23,10 +23,10 @@ int thread_create(void (*fn) (void*),void* arg){
     //check the CLONE
     if(thread_id<0){
         fprintf(1,"thread_create: clone failed\n");
-        // return -1;
+         return -1;
     }
     //child
-    if(thread_id==0){
+    else if(thread_id==0){
         //call the function
         fn(arg);
         //fre the stack
