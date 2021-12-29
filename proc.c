@@ -88,6 +88,9 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
+  //make thread ans stacktop zero
+  p->threads=0; //illegal value means its process
+  p->stackTop=0; //illegal value means its process
 
   release(&ptable.lock);
 
@@ -284,6 +287,9 @@ wait(void)
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if(p->parent != curproc)
         continue;
+       // only join handles child threads
+      if(p->threads == 0)
+        continue;    
       havekids = 1;
       if(p->state == ZOMBIE){
         // Found one.
@@ -639,16 +645,21 @@ join(void){
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if(p->parent != curproc)
         continue;
-      havekids = 1;
+      
       if(p->threads!=0){//just wait for threads
         continue;
       }
+      havekids = 1;
       if(p->state == ZOMBIE){
         // Found one.
         pid = p->pid;
         kfree(p->kstack);
         p->kstack = 0;
-        freevm(p->pgdir);
+        //check if no threads free page directory
+        if(check_pgdir_share(p)==0){
+          freevm(p->pgdir);
+        }
+       
         p->pid = 0;
         p->parent = 0;
         p->name[0] = 0;
