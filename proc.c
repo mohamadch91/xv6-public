@@ -310,6 +310,11 @@ exit(void)
 
   acquire(&ptable.lock);
 
+  // decremnt number of threads for pgtable
+  if(curproc->threads == -1){ 
+    curproc->parent->threads--;
+  }
+
   // Parent might be sleeping in wait().
   wakeup1(curproc->parent);
 
