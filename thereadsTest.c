@@ -7,7 +7,7 @@ void childPrint(void* args){
 }
 //just create thread
 int main(void){
-    int argument = 0x0F01; // 3841 in decimal
+    int argument = 0x0F21; 
     int thread_id = thread_create(&childPrint, (void*)&argument);
     if(thread_id < 0)
         printf(1, "thread_create failed\n");
@@ -17,4 +17,5 @@ int main(void){
     printf(1, "thread_id is : %d\n", thread_id);
 
     exit();
+}
 

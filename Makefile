@@ -143,7 +143,7 @@ tags: $(OBJS) entryother.S _init
 vectors.S: vectors.pl
 	./vectors.pl > vectors.S
 
-ULIB = ulib.o usys.o printf.o umalloc.o
+ULIB = ulib.o usys.o printf.o umalloc.o thread_create.o
 
 _%: %.o $(ULIB)
 	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o $@ $^
@@ -184,7 +184,7 @@ UPROGS=\
 	_getProcCountTest\
 	_getReadCountTest\
 	_threads\
-	_threadsTest\
+	_thereadsTest\
 	_thread_test\
 	_test_thread\
 
@@ -262,7 +262,7 @@ EXTRA=\
 	getProcCountTest.c\
 	getReadCountTest.c\
 	threads.c\
-	threadsTest.c\
+	thereadsTest.c\
 	thread_test.c\
 	test_thread.c\
 
