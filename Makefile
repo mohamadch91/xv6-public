@@ -183,6 +183,10 @@ UPROGS=\
 	_zombie\
 	_getProcCountTest\
 	_getReadCountTest\
+	_threads\
+	_threadsTest\
+	_thread_test\
+	_test_thread\
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
@@ -257,6 +261,10 @@ EXTRA=\
 	.gdbinit.tmpl gdbutil\
 	getProcCountTest.c\
 	getReadCountTest.c\
+	threads.c\
+	threadsTest.c\
+	thread_test.c\
+	test_thread.c\
 
 dist:
 	rm -rf dist
