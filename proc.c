@@ -623,11 +623,24 @@ clone(void* stack){
   return pid;
 
 }
+//check page directory page 
+int 
+check_pgdir(struct proc * process){
+  struct proc *p;
+  for(p=ptable.proc;p<&ptable.proc[NPROC];p++){ 
+    if(p!= process &&p->pgdir==process->pagedir){
+      return 0;
+    }
+  }
+  return 1;
+}
+
+
+
 // function like wait
 // just wait for threads
 // return 0 on success, -1 on failure
 // wait for all threads to finish
-
 int 
 join(void){
   struct proc* p;
