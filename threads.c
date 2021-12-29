@@ -2,7 +2,7 @@
 #include "types.h"
 #include "stat.h"
 #include "user.h"
-//do therads and for for share memory
+//do therads and  for share memory and fork
 //int stack[4096] __attribute__ ((aligned (4096)));
 int x = 0;
 
