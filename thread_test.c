@@ -18,7 +18,7 @@ create_n_threads(int n)
   printf(1, "welcome to test_n_threads\n");
   int tid, i, pid;
   int threadCounter = 0;
-  int time = 100;
+  int time = 10;
   for (i = 0; i < n; i++) {
     tid = thread_create(sleep_func, &time);
     sleep(10);
@@ -53,6 +53,6 @@ create_n_threads(int n)
 int
 main(int argc, char *argv[])
 {
-   create_n_threads(100);
+   create_n_threads(3);
    exit();
 }

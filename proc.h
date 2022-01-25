@@ -51,7 +51,29 @@ struct proc {
   char name[16];               // Process name (debugging)
   int threads;                 // Number of threads using this process and same memory
   int stackTop;                // Top of stack
+  int status;
+
+  // int rrRemainingTime; // Remaining time left for RR scheduling
+  int priority;       // Process priority, 1 highest, 6 lowest.
+
+  int creationTime;    // Time which this process was created 
+  int sleepingTime;    // Time spent being in SLEEPING state
+  int runnableTime;    // Time spent being in RUNNABLE state
+  int runningTime;     // Time spent being in RUNNING state
+  int terminationTime; // Time which this process was terminated 
+
+
+
 };
+enum schedPolicy
+{
+  DEFAULT = 0,
+  ROUND_ROBIN = 1,
+  PRIORITY = 2,
+
+};
+
+extern enum schedPolicy policy;
 
 // Process memory is laid out contiguously, low addresses first:
 //   text
