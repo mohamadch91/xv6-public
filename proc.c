@@ -896,3 +896,65 @@ int setPriority(int newPriority)
   return 0;
 
 }
+//wait for children to complete its job and update times for sched...
+int wait2(int *turnAroundtime, int *waitingtime, int *cbttime ,int *pario)
+{
+  struct proc *p;
+  int havekids, pid;
+  struct proc *curproc = myproc();
+
+  acquire(&ptable.lock);
+  for (;;)
+  {
+    // Scan through table looking for exited children.
+    havekids = 0;
+    for (p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+    {
+      if (p->parent != curproc)
+        continue;
+      havekids = 1;
+      if (p->state == ZOMBIE)
+      {
+        // Found one.
+        // store process times for further calculations
+
+        *turnAroundtime = getTurnAroundTime(p->pid);
+        *waitingtime = getWaitingTime(p->pid);
+        *cbttime = getCBT(p->pid);
+
+        if(policy == 3){
+          *pario = p->queue;
+        }else{
+          *pario = p->priority;
+        }
+
+        pid = p->pid;
+        kfree(p->kstack);
+        p->kstack = 0;
+        freevm(p->pgdir);
+        p->pid = 0;
+        p->parent = 0;
+        p->name[0] = 0;
+        p->killed = 0;
+        p->state = UNUSED;
+
+        //reset times
+        // p->runnableTime=0;
+        // p->sleepingTime=0;
+        // p->runningTime=0;
+
+        release(&ptable.lock);
+        return pid;
+      }
+    }
+    // No point waiting if we don't have any children.
+    if (!havekids || curproc->killed)
+    {
+      release(&ptable.lock);
+      return -1;
+    }
+
+    // Wait for children to exit.  (See wakeup1 call in proc_exit.)
+    sleep(curproc, &ptable.lock); //DOC: wait-sleep
+  }
+}
