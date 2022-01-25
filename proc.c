@@ -958,3 +958,16 @@ int wait2(int *turnAroundtime, int *waitingtime, int *cbttime ,int *pario)
     sleep(curproc, &ptable.lock); //DOC: wait-sleep
   }
 }
+int setQueue(int queueNum)
+{
+  struct proc *curproc = myproc();
+  if (queueNum >=1 && queueNum<=6)
+  {
+    curproc->queue = queueNum;
+    return 0;
+  }
+  else
+  {
+    return-1;
+  }
+}

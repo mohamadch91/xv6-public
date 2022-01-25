@@ -61,7 +61,7 @@ struct proc {
   int runnableTime;    // Time spent being in RUNNABLE state
   int runningTime;     // Time spent being in RUNNING state
   int terminationTime; // Time which this process was terminated 
-
+  int queue; 
 
 
 };
@@ -70,6 +70,7 @@ enum schedPolicy
   DEFAULT = 0,
   ROUND_ROBIN = 1,
   PRIORITY = 2,
+  MULTILAYRED_PRIORITY = 3
 
 };
 
