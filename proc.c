@@ -794,3 +794,105 @@ join(void){
   }
 
 }
+
+int
+cps()
+{
+struct proc *p;
+//Enables interrupts on this processor.
+sti();
+
+//Loop over process table looking for process with pid.
+acquire(&ptable.lock);
+cprintf("name \t pid \t state \t priority \n");
+for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+  if(p->state == SLEEPING)
+	  cprintf("%s \t %d \t SLEEPING \t %d \n ", p->name,p->pid,p->priority);
+	else if(p->state == RUNNING)
+ 	  cprintf("%s \t %d \t RUNNING \t %d \n ", p->name,p->pid,p->priority);
+	else if(p->state == RUNNABLE)
+ 	  cprintf("%s \t %d \t RUNNABLE \t %d \n ", p->name,p->pid,p->priority);
+}
+release(&ptable.lock);
+return 22;
+}
+
+
+//change the policy
+int changePolicy(int newPolicy)
+{
+  if (newPolicy >= 0 && newPolicy <= 3)
+  {
+    policy = newPolicy;
+    return 0;
+  }
+  else
+    return -1;
+}
+
+int getTurnAroundTime(int pid)
+{
+  int sleep = (&ptable.proc[pid])->sleepingTime;
+  int runnable = (&ptable.proc[pid])->runnableTime;
+  int running  =  (&ptable.proc[pid])->runningTime;
+  
+  int turnAroundTime = sleep + runnable + running;
+
+  return turnAroundTime;
+}
+
+int getWaitingTime(int pid)
+{
+  int sleep = (&ptable.proc[pid])->sleepingTime;
+  int runnable = (&ptable.proc[pid])->runnableTime;
+  
+  int waitingTime = sleep + runnable ;
+  
+  return waitingTime;
+}
+
+int getCBT(int pid)
+{
+  int running  =  (&ptable.proc[pid])->runningTime;
+  
+  return running;
+}
+
+void updateTimes()
+{
+  struct proc *p;
+  for (p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+  {
+    switch (p->state)
+    {
+    case SLEEPING:
+      p->sleepingTime++;
+      break;
+
+    case RUNNABLE:
+      p->runnableTime++;
+      break;
+
+    case RUNNING:
+      p->runningTime++;
+      break;
+
+    default:
+      break;
+    }
+  }
+}
+
+int setPriority(int newPriority)
+{
+  struct proc *p = myproc();
+  if (newPriority >= 1 && newPriority <= 6)
+  {
+    p->priority = newPriority;
+  }
+  else {
+      p->priority = 5;
+   }
+  return 0;
+
+}
