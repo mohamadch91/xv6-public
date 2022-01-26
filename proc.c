@@ -90,9 +90,18 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
-  //make thread ans stacktop zero
-  p->threads=-1; //illegal value means its process
-  p->stackTop=-1; //illegal value means its process
+  p->stackTop = -1; //initialize stackTop to -1 (illegal value)
+  p->threads = -1; //initialize threads to -1 (illegal value)
+  
+  //for schduler
+  p->priority = 3;
+  p->sleepingTime = 0;
+  p->runnableTime = 0;
+  p->runningTime = 0;
+  p->queue = 1; // by default each process is in the queue 1
+
+  // p->rrRemainingTime = QUANTUM;
+
 
   release(&ptable.lock);
 
