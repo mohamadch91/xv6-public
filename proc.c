@@ -676,9 +676,9 @@ for (int i = 0; i < 20; i++){
     
     if(p->state == SLEEPING && p->chan == chan){
       p->state = RUNNABLE;
-      if(policy==4){
-      p->queue=1;
-      p->priority=1;
+      if(policy== 4){
+        p->queue = 1;
+        p->priority = p->priority + 1;
       }
     }
     }
@@ -1030,6 +1030,7 @@ int wait2(int *turnAroundtime, int *waitingtime, int *cbttime ,int *pario)
         *cbttime = getCBT(p->pid);
 
         if(policy == 3 || policy == 4){
+          *pario = p->priority;
           *pario = p->queue;
         }else{
           *pario = p->priority;

@@ -26,8 +26,8 @@ int main(int argc, char *argv[])
         {
             //give to different queues
             
-            setPriority((1));
-            setQueue(1);
+            setPriority((i / 10) + 1);
+            setQueue((i / 10) + 1);
             child_num = i + 1;
             break;
         }
