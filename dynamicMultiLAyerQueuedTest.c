@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
     int result = changePolicy(4);
 
     if(result == 0){
-        printf(1,"scheduling policy changed to dynamic multilayered queue mode !\n");
+        printf(1,"scheduling policy changed to multilayered queue mode !\n");
     } else {
         printf(1,"could not change the policy !!!\n");
     }
@@ -25,12 +25,14 @@ int main(int argc, char *argv[])
         if (fork() == 0) // Child
         {
             //give to different queues
-            setQueue(3);
+            int temp;
+            temp=setPriority((i / 10) + 1);
+            setQueue(temp);
             child_num = i + 1;
             break;
         }
     }
-    printf(1,"hi");
+
     if (getpid() != main_pid)
     {
         for (int i = 1; i <= 20; i++)

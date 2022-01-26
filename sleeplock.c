@@ -1,5 +1,4 @@
 // Sleeping locks
-
 #include "types.h"
 #include "defs.h"
 #include "param.h"
@@ -34,11 +33,12 @@ acquiresleep(struct sleeplock *lk)
 void
 releasesleep(struct sleeplock *lk)
 {
-  acquire(&lk->lk);
+  // acquire(&lk->lk);
   lk->locked = 0;
   lk->pid = 0;
   wakeup(lk);
-  release(&lk->lk);
+  
+  // release(&lk->lk);
 }
 
 int

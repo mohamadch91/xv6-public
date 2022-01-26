@@ -662,9 +662,11 @@ wakeup1(void *chan)
   struct proc *p;
 
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    
     if(p->state == SLEEPING && p->chan == chan){
       p->state = RUNNABLE;
-      // p->queue++;
+      p->queue++;
+      
     }
     }
 }
@@ -673,9 +675,10 @@ wakeup1(void *chan)
 void
 wakeup(void *chan)
 {
-  acquire(&ptable.lock);
+
+  // acquire(&ptable.lock);
   wakeup1(chan);
-  release(&ptable.lock);
+  // release(&ptable.lock);
 }
 
 // Kill the process with the given pid.
@@ -976,9 +979,11 @@ int setPriority(int newPriority)
   {
 
     p->priority = newPriority;
+    return newPriority;
   }
   else {
       p->priority = 5;
+      return 5;
    }
   // release(&ptable.lock);
   return 0;

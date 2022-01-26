@@ -69,6 +69,7 @@ exec(char *path, char **argv)
   sp = sz;
   curproc -> stackTop = sp;
   curproc->queue=3;
+  curproc->priority=3;
   // Push argument strings, prepare rest of stack in ustack.
   for(argc = 0; argv[argc]; argc++) {
     if(argc >= MAXARG)

@@ -24,8 +24,9 @@ int main(int argc, char *argv[])
         sleep(100);
         if (fork() == 0) // Child
         {
-            //give to different queues
-            setQueue((i / 10) + 1);
+           int temp;
+            temp=setPriority((i / 10) + 1);
+            setQueue(temp);
             child_num = i + 1;
             break;
         }
