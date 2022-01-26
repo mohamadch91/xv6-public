@@ -432,6 +432,24 @@ wait(void)
   }
 }
 
+void contextSwitch(struct cpu *c, struct proc *p)
+{
+  // Switch to chosen process.  It is the process's job
+  // to release ptable.lock and then reacquire it
+  // before jumping back to us.
+  c->proc = p;
+  switchuvm(p);
+  p->state = RUNNING;
+
+  swtch(&(c->scheduler), p->context);
+  switchkvm();
+
+  // Process is done running for now.
+  // It should have changed its p->state before coming back.
+  c->proc = 0;
+}
+
+
 //PAGEBREAK: 42
 // Per-CPU process scheduler.
 // Each CPU calls scheduler() after setting itself up.
