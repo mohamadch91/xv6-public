@@ -540,7 +540,17 @@ scheduler(void)
           }
       }
       break;
-
+    case DYNAMIC_MULTILAYER_PRIOITY:
+      for (int currentQueue = 1; currentQueue <= 6; currentQueue++){
+          for (p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+              if (p->state == RUNNABLE && p->queue == currentQueue ) {
+                contextSwitch(c, p);
+                p->queue++;
+                break;
+              }
+          }
+      }
+      break;
     }
 
     release(&ptable.lock);
@@ -652,9 +662,12 @@ wakeup1(void *chan)
 {
   struct proc *p;
 
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
-    if(p->state == SLEEPING && p->chan == chan)
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->state == SLEEPING && p->chan == chan){
       p->state = RUNNABLE;
+      p->queue=1;
+    }
+    }
 }
 
 // Wake up all processes sleeping on chan.
@@ -959,13 +972,16 @@ void updateTimes()
 int setPriority(int newPriority)
 {
   struct proc *p = myproc();
+  acquire(&ptable.lock);
   if (newPriority >= 1 && newPriority <= 6)
   {
+
     p->priority = newPriority;
   }
   else {
       p->priority = 5;
    }
+  release(&ptable.lock);
   return 0;
 
 }
@@ -1034,13 +1050,16 @@ int wait2(int *turnAroundtime, int *waitingtime, int *cbttime ,int *pario)
 int setQueue(int queueNum)
 {
   struct proc *curproc = myproc();
+  acquire(&ptable.lock);
   if (queueNum >=1 && queueNum<=6)
   {
     curproc->queue = queueNum;
+    release(&ptable.lock);
     return 0;
   }
   else
   {
+    release(&ptable.lock);
     return-1;
   }
 }
