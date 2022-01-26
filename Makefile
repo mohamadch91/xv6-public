@@ -143,7 +143,7 @@ tags: $(OBJS) entryother.S _init
 vectors.S: vectors.pl
 	./vectors.pl > vectors.S
 
-ULIB = ulib.o usys.o printf.o umalloc.o thread_create.o
+ULIB = ulib.o usys.o printf.o umalloc.o 
 
 _%: %.o $(ULIB)
 	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o $@ $^
@@ -183,10 +183,11 @@ UPROGS=\
 	_zombie\
 	_getProcCountTest\
 	_getReadCountTest\
-	_threads\
-	_thereadsTest\
-	_thread_test\
-	_test_thread\
+	_ps\
+	_roundRobinTest\
+	_prioritySchedTest\
+	_multiLayeredQueuedTest\
+	_dynamicMultiLAyerQueuedTest\
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
@@ -261,10 +262,11 @@ EXTRA=\
 	.gdbinit.tmpl gdbutil\
 	getProcCountTest.c\
 	getReadCountTest.c\
-	threads.c\
-	thereadsTest.c\
-	thread_test.c\
-	test_thread.c\
+	ps.c\
+	roundRobinTest.c\
+	prioritySchedTest.c\
+	multiLayeredQueuedTest.c\
+	dynamicMultiLAyerQueuedTest.c\
 
 dist:
 	rm -rf dist
