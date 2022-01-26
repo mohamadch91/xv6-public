@@ -545,7 +545,6 @@ scheduler(void)
           for (p = ptable.proc; p < &ptable.proc[NPROC]; p++){
               if (p->state == RUNNABLE && p->queue == currentQueue ) {
                 contextSwitch(c, p);
-                p->queue++;
                 break;
               }
           }
@@ -665,7 +664,7 @@ wakeup1(void *chan)
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
     if(p->state == SLEEPING && p->chan == chan){
       p->state = RUNNABLE;
-      p->queue=1;
+      // p->queue++;
     }
     }
 }
@@ -972,7 +971,7 @@ void updateTimes()
 int setPriority(int newPriority)
 {
   struct proc *p = myproc();
-  acquire(&ptable.lock);
+  // acquire(&ptable.lock);
   if (newPriority >= 1 && newPriority <= 6)
   {
 
@@ -981,7 +980,7 @@ int setPriority(int newPriority)
   else {
       p->priority = 5;
    }
-  release(&ptable.lock);
+  // release(&ptable.lock);
   return 0;
 
 }
@@ -1050,16 +1049,16 @@ int wait2(int *turnAroundtime, int *waitingtime, int *cbttime ,int *pario)
 int setQueue(int queueNum)
 {
   struct proc *curproc = myproc();
-  acquire(&ptable.lock);
+  // acquire(&ptable.lock);
   if (queueNum >=1 && queueNum<=6)
   {
     curproc->queue = queueNum;
-    release(&ptable.lock);
+    // release(&ptable.lock);
     return 0;
   }
   else
   {
-    release(&ptable.lock);
+    // release(&ptable.lock);
     return-1;
   }
 }

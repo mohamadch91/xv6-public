@@ -103,8 +103,137 @@ trap(struct trapframe *tf)
   // Force process to give up CPU on clock tick.
   // If interrupts were on while locks held, would need to check nlock.
   if(myproc() && myproc()->state == RUNNING &&
-     tf->trapno == T_IRQ0+IRQ_TIMER)
-    yield();
+     tf->trapno == T_IRQ0+IRQ_TIMER){
+    switch (policy)
+    {
+    case DEFAULT:
+      yield();
+      break;
+
+    case ROUND_ROBIN:
+      // if (myproc()->rrRemainingTime == 0)
+      // {
+      //   // Reset remaining time back to quantum
+      //   myproc()->rrRemainingTime = QUANTUM;
+      //   yield();
+      // }
+      // else
+      // {
+      //   myproc()->rrRemainingTime--;
+      // }
+      if(ticks % QUANTUM==0){
+        yield();
+      }
+      break;
+
+    case MULTILAYRED_PRIORITY:
+
+      switch (myproc()->queue){
+      case 1:
+        if( ticks % (QUANTUM+6) == 0 ){
+          yield();
+        }
+        break;
+
+      case 2:
+        if( ticks % (QUANTUM+5) == 0 ){
+          yield();
+        }
+        break;
+
+      case 3:
+        if( ticks % (QUANTUM+4) == 0 ){
+          yield();
+        }
+        break;
+
+      case 4:
+        if( ticks % (QUANTUM+3) == 0 ){
+          yield();
+        }
+        break;
+
+      case 5:
+        if( ticks % (QUANTUM+2) == 0 ){
+          yield();
+        }
+        break;
+
+      case 6:
+        if( ticks % (QUANTUM+1) == 0 ){
+          yield();
+        }
+        break;
+      
+      default:
+        yield();
+        break;
+      }
+      
+    break;
+    case DYNAMIC_MULTILAYER_PRIOITY:
+        switch (myproc()->queue){
+      case 1:
+        if( ticks % (QUANTUM+6) == 0 ){
+          yield();
+          myproc()->queue++;
+        }
+        break;
+
+      case 2:
+        if( ticks % (QUANTUM+5) == 0 ){
+          yield();
+          myproc()->queue++;
+        }
+        break;
+
+      case 3:
+        if( ticks % (QUANTUM+4) == 0 ){
+          yield();
+          myproc()->queue++;
+        }
+        break;
+
+      case 4:
+        if( ticks % (QUANTUM+3) == 0 ){
+          yield();
+          myproc()->queue++;
+        }
+        break;
+
+      case 5:
+        if( ticks % (QUANTUM+2) == 0 ){
+          yield();
+          myproc()->queue++;
+        }
+        break;
+
+      case 6:
+        if( ticks % (QUANTUM+1) == 0 ){
+          yield();
+          myproc()->queue++;
+        }
+        break;
+      
+      default:
+        yield();
+        myproc()->queue++;
+        break;
+      }
+      
+    break;
+
+    case PRIORITY:
+      yield();
+      break;
+    }
+}
+
+  // Update each process sleeping, runnable, running time
+  if (tf->trapno == T_IRQ0 + IRQ_TIMER)
+  {
+    updateTimes();
+  }
 
   // Check if the process has been killed since we yielded
   if(myproc() && myproc()->killed && (tf->cs&3) == DPL_USER)
