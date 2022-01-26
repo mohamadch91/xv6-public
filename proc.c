@@ -98,8 +98,12 @@ found:
   p->sleepingTime = 0;
   p->runnableTime = 0;
   p->runningTime = 0;
-  p->queue = 1; // by default each process is in the queue 1
-
+  if(policy==4){
+    p->queue=3; // by defoult each process proprity is 3 in this mode
+  }
+  else{
+    p->queue = 1; // by default each process is in the queue 1
+  }
   // p->rrRemainingTime = QUANTUM;
 
 
@@ -890,7 +894,7 @@ return 22;
 //change the policy
 int changePolicy(int newPolicy)
 {
-  if (newPolicy >= 0 && newPolicy <= 3)
+  if (newPolicy >= 0 && newPolicy <= 4)
   {
     policy = newPolicy;
     return 0;
@@ -991,7 +995,7 @@ int wait2(int *turnAroundtime, int *waitingtime, int *cbttime ,int *pario)
         *waitingtime = getWaitingTime(p->pid);
         *cbttime = getCBT(p->pid);
 
-        if(policy == 3){
+        if(policy == 3 || policy == 4){
           *pario = p->queue;
         }else{
           *pario = p->priority;
