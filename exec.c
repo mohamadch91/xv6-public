@@ -3,11 +3,13 @@
 #include "memlayout.h"
 #include "mmu.h"
 #include "proc.h"
-
 #include "defs.h"
 #include "x86.h"
 #include "elf.h"
+
 extern enum schedPolicy policy;
+
+
 int
 exec(char *path, char **argv)
 {
@@ -68,12 +70,7 @@ exec(char *path, char **argv)
     goto bad;
   clearpteu(pgdir, (char*)(sz - 2*PGSIZE));
   sp = sz;
-  curproc -> stackTop = sp;
-   curproc->threads = 1;
-  if(policy==4){ 
-  curproc->queue=3;
-  }
-  curproc->priority=3;
+
   // Push argument strings, prepare rest of stack in ustack.
   for(argc = 0; argv[argc]; argc++) {
     if(argc >= MAXARG)
@@ -99,13 +96,24 @@ exec(char *path, char **argv)
       last = s+1;
   safestrcpy(curproc->name, last, sizeof(curproc->name));
 
-   curproc-> threads = 1;
   // Commit to the user image.
   oldpgdir = curproc->pgdir;
   curproc->pgdir = pgdir;
   curproc->sz = sz;
   curproc->tf->eip = elf.entry;  // main
   curproc->tf->esp = sp;
+  
+  //set defualt priority
+  curproc->priority = 3; 
+
+  //thread init values
+  curproc->threads = 1;
+  curproc->stackTop = sp;
+  
+  if(policy==4){ 
+  curproc->queue=3;
+  }
+
 
   switchuvm(curproc);
   freevm(oldpgdir);

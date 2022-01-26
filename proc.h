@@ -49,8 +49,8 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
-  int threads;                 // Number of threads using this process and same memory
-  int stackTop;                // Top of stack
+  int threads;
+  int stackTop;
   int status;
 
   // int rrRemainingTime; // Remaining time left for RR scheduling
@@ -61,10 +61,13 @@ struct proc {
   int runnableTime;    // Time spent being in RUNNABLE state
   int runningTime;     // Time spent being in RUNNING state
   int terminationTime; // Time which this process was terminated 
-  int queue; 
+
+  int queue;                  // Defines in which queue the process belongs
 
 
 };
+
+// Scheduling options
 enum schedPolicy
 {
   DEFAULT = 0,
@@ -72,10 +75,10 @@ enum schedPolicy
   PRIORITY = 2,
   MULTILAYRED_PRIORITY = 3,
   DYNAMIC_MULTILAYER_PRIOITY=4
-
 };
 
 extern enum schedPolicy policy;
+
 
 // Process memory is laid out contiguously, low addresses first:
 //   text

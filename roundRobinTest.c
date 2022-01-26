@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
     //make process
     for (int i = 0; i < NUM_CHILDREN; i++)
     {
-                sleep(100);
+                // sleep(100);
         if (fork() == 0) // Child
             break;
         
@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
 
     if (getpid() != main_pid)
     {
-        for (int i = 1; i <= 1000; i++){
+        for (int i = 1; i <= 100; i++){
             int pid = getpid();
             printf(1, "PID=/%d/ : i=/%d/\n",pid , i);
         }

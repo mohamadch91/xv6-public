@@ -143,7 +143,7 @@ tags: $(OBJS) entryother.S _init
 vectors.S: vectors.pl
 	./vectors.pl > vectors.S
 
-ULIB = ulib.o usys.o printf.o umalloc.o 
+ULIB = ulib.o usys.o printf.o umalloc.o thread_creator.o
 
 _%: %.o $(ULIB)
 	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o $@ $^
@@ -187,7 +187,7 @@ UPROGS=\
 	_roundRobinTest\
 	_prioritySchedTest\
 	_multiLayeredQueuedTest\
-	_dynamicMultiLAyerQueuedTest\
+	_dynamicLayeredQueueTest\
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
@@ -266,7 +266,7 @@ EXTRA=\
 	roundRobinTest.c\
 	prioritySchedTest.c\
 	multiLayeredQueuedTest.c\
-	dynamicMultiLAyerQueuedTest.c\
+	dynamicLayeredQueueTest.c\
 
 dist:
 	rm -rf dist

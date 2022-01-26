@@ -20,19 +20,19 @@
 #define SYS_link   19
 #define SYS_mkdir  20
 #define SYS_close  21
-#define SYS_ProcCount 22
-#define SYS_getReadCount 23
-#define SYS_clone 24
-#define SYS_join 25
+#define SYS_getHelloWorld 22
+#define SYS_getProcCount 23
+#define SYS_getReadCount 24
+#define SYS_thread_create 25
+#define SYS_thread_wait 26
 //for ps
-#define SYS_cps    26
-#define SYS_changePolicy 27
-#define SYS_getTurnAroundTime 28
-#define SYS_getWaitingTime 29
-#define SYS_getCBT 30
-#define SYS_setPriority 31
-#define SYS_wait2    32
-#define SYS_setQueue 33
-
+#define SYS_cps    27
+#define SYS_changePolicy 28
+#define SYS_getTurnAroundTime 29
+#define SYS_getWaitingTime 30
+#define SYS_getCBT 31
+#define SYS_setPriority 32
+#define SYS_wait2    33
+#define SYS_setQueue 34
 
 

@@ -111,16 +111,7 @@ trap(struct trapframe *tf)
       break;
 
     case ROUND_ROBIN:
-      // if (myproc()->rrRemainingTime == 0)
-      // {
-      //   // Reset remaining time back to quantum
-      //   myproc()->rrRemainingTime = QUANTUM;
-      //   yield();
-      // }
-      // else
-      // {
-      //   myproc()->rrRemainingTime--;
-      // }
+
       if(ticks % QUANTUM==0){
         yield();
       }
@@ -171,6 +162,7 @@ trap(struct trapframe *tf)
       }
       
     break;
+
     case DYNAMIC_MULTILAYER_PRIOITY:
         switch (myproc()->queue){
       case 1:
@@ -222,7 +214,6 @@ trap(struct trapframe *tf)
           yield();
         break;
       }
-      
     break;
 
     case PRIORITY:

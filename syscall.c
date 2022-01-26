@@ -103,10 +103,11 @@ extern int sys_unlink(void);
 extern int sys_wait(void);
 extern int sys_write(void);
 extern int sys_uptime(void);
-extern int sys_ProcCount(void);
-extern int sys_getReadCount(void); 
-extern int sys_clone(void);
-extern int sys_join(void);
+extern int sys_getHelloWorld(void); 
+extern int sys_getProcCount(void);
+extern int sys_getReadCount(void);
+extern int sys_thread_create(void );
+extern int sys_thread_wait(void );
 extern int sys_cps(void);
 extern int sys_changePolicy(void);
 extern int sys_getTurnAroundTime(void);
@@ -115,6 +116,8 @@ extern int sys_getCBT(void);
 extern int sys_setPriority(void);
 extern int sys_wait2(void);
 extern int sys_setQueue(void);
+
+
 
 
 
@@ -140,10 +143,11 @@ static int (*syscalls[])(void) = {
 [SYS_link]    sys_link,
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
-[SYS_ProcCount] sys_ProcCount,
-[SYS_getReadCount] sys_getReadCount, 
-[SYS_clone]   sys_clone,
-[SYS_join]    sys_join,
+[SYS_getHelloWorld] sys_getHelloWorld,
+[SYS_getProcCount] sys_getProcCount,
+[SYS_getReadCount] sys_getReadCount,
+[SYS_thread_create] sys_thread_create,
+[SYS_thread_wait] sys_thread_wait,
 [SYS_cps] sys_cps,
 [SYS_changePolicy] sys_changePolicy,
 [SYS_getTurnAroundTime] sys_getTurnAroundTime,

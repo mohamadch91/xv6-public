@@ -6,7 +6,7 @@
 #include "memlayout.h"
 #include "mmu.h"
 #include "proc.h"
-extern int Readcount;
+
 int
 sys_fork(void)
 {
@@ -85,30 +85,37 @@ sys_uptime(void)
   uint xticks;
 
   acquire(&tickslock);
-  xticks = ticks;
+  xticks = ticks;                   
   release(&tickslock);
   return xticks;
 }
-int
-sys_ProcCount(void){
-  return ProcCount();
-}
-int sys_getReadCount(void);
 
-int sys_clone(void)
-{
-  //  stackptr is stack_pointer
+int sys_getHelloWorld(void) {
+  return getHelloWorld();
+}
+
+int sys_getProcCount(void) {
+  return getProcCount();
+}
+
+extern int readCount;
+
+int sys_getReadCount(void) {
+  // return getReadCount();
+  cprintf("Number of Read  : %d\n",readCount);
+  return readCount;
+}
+
+int sys_thread_create(void){
   int stackptr = 0;
-  if(argint(0, &stackptr) < 0)
+  if(argint(0,&stackptr) < 0 ){
     return -1;
-
-  return clone((void*) stackptr);
+  }
+  return thread_create((void*) stackptr);
 }
 
-int
-sys_join(void)
-{
-  return join();
+int sys_thread_wait(void){
+  return thread_wait();
 }
 
 int
@@ -161,6 +168,7 @@ int sys_setPriority(void)
   else
     return setPriority(newPriority);
 }
+
 int sys_wait2(void) {
   int *turnAroundtime,  *waitingtime,  *cbttime , *pario;
   if (argptr(0, (void*)&turnAroundtime, sizeof(turnAroundtime)) < 0)

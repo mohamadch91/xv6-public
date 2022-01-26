@@ -120,10 +120,11 @@ void            userinit(void);
 int             wait(void);
 void            wakeup(void*);
 void            yield(void);
-int             ProcCount(void);
-int             getReadCount(void); 
-int             clone(void*);
-int             join(void);
+int             getHelloWorld(void);
+int             getProcCount(void);
+int             getReadCount(void);
+int             thread_create(void *stack); 
+int             thread_wait(void);  
 int		        cps(void);
 int             changePolicy(int newPolicy);
 int             getTurnAroundTime(int pid);
@@ -133,6 +134,11 @@ void            updateTimes();
 int             setPriority(int newPriority);
 int             wait2(int *turnAroundtime, int *waitingtime, int *cbttime ,int *pario);
 int             setQueue(int queueNum);
+
+
+
+
+
 // swtch.S
 void            swtch(struct context**, struct context*);
 
