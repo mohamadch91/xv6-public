@@ -3,10 +3,11 @@
 #include "memlayout.h"
 #include "mmu.h"
 #include "proc.h"
+
 #include "defs.h"
 #include "x86.h"
 #include "elf.h"
-
+extern enum schedPolicy policy;
 int
 exec(char *path, char **argv)
 {
@@ -68,7 +69,10 @@ exec(char *path, char **argv)
   clearpteu(pgdir, (char*)(sz - 2*PGSIZE));
   sp = sz;
   curproc -> stackTop = sp;
+   curproc->threads = 1;
+  if(policy==4){ 
   curproc->queue=3;
+  }
   curproc->priority=3;
   // Push argument strings, prepare rest of stack in ustack.
   for(argc = 0; argv[argc]; argc++) {

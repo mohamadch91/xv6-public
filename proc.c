@@ -19,6 +19,7 @@ extern void forkret(void);
 extern void trapret(void);
 // An enum default value is always zero
 enum schedPolicy policy;
+
 static void wakeup1(void *chan);
 
 void
@@ -530,6 +531,24 @@ scheduler(void)
       break;
 
     case MULTILAYRED_PRIORITY:
+       for (int  i = 0; i < 20; i++)
+    {
+      /* */
+      for (int currentQueue = 1; currentQueue <= 6; currentQueue++){
+          for (p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+              if (p->state == RUNNABLE && p->queue == currentQueue ) {
+                contextSwitch(c, p);
+                break;
+              }
+          }
+      }
+    }
+      break;
+    case DYNAMIC_MULTILAYER_PRIOITY:
+    for (int  i = 0; i < 20; i++)
+    {
+      /* code */
+    
     
       for (int currentQueue = 1; currentQueue <= 6; currentQueue++){
           for (p = ptable.proc; p < &ptable.proc[NPROC]; p++){
@@ -539,16 +558,7 @@ scheduler(void)
               }
           }
       }
-      break;
-    case DYNAMIC_MULTILAYER_PRIOITY:
-      for (int currentQueue = 1; currentQueue <= 6; currentQueue++){
-          for (p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-              if (p->state == RUNNABLE && p->queue == currentQueue ) {
-                contextSwitch(c, p);
-                break;
-              }
-          }
-      }
+    }
       break;
     }
 
@@ -660,15 +670,19 @@ static void
 wakeup1(void *chan)
 {
   struct proc *p;
-
+//write for all childrens
+for (int i = 0; i < 20; i++){
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
     
     if(p->state == SLEEPING && p->chan == chan){
       p->state = RUNNABLE;
-      p->queue++;
-      
+      if(policy==4){
+      p->queue=1;
+      p->priority=1;
+      }
     }
     }
+}
 }
 
 // Wake up all processes sleeping on chan.
@@ -676,9 +690,9 @@ void
 wakeup(void *chan)
 {
 
-  // acquire(&ptable.lock);
+  acquire(&ptable.lock);
   wakeup1(chan);
-  // release(&ptable.lock);
+  release(&ptable.lock);
 }
 
 // Kill the process with the given pid.

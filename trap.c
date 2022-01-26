@@ -175,49 +175,51 @@ trap(struct trapframe *tf)
         switch (myproc()->queue){
       case 1:
         if( ticks % (QUANTUM+6) == 0 ){
+          //  myproc()->queue++;
+          setQueue(myproc()->queue+1);
           yield();
-          myproc()->queue++;
+         
         }
         break;
 
       case 2:
         if( ticks % (QUANTUM+5) == 0 ){
+          setQueue(myproc()->queue+1);
           yield();
-          // myproc()->queue++;
         }
         break;
 
       case 3:
         if( ticks % (QUANTUM+4) == 0 ){
+           setQueue(myproc()->queue+1);
           yield();
-          // myproc()->queue++;
         }
         break;
 
       case 4:
         if( ticks % (QUANTUM+3) == 0 ){
+           setQueue(myproc()->queue+1);
           yield();
-          // myproc()->queue++;
         }
         break;
 
       case 5:
         if( ticks % (QUANTUM+2) == 0 ){
+           setQueue(myproc()->queue+1);
           yield();
-          // myproc()->queue++;
         }
         break;
 
       case 6:
         if( ticks % (QUANTUM+1) == 0 ){
+          setQueue(myproc()->queue+1);
           yield();
-          // myproc()->queue++;
         }
         break;
       
       default:
-        yield();
-        // myproc()->queue++;
+        setQueue(myproc()->queue+1);
+          yield();
         break;
       }
       
